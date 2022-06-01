@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Menu, Layout } from 'antd';
 import {
   PushpinOutlined,
@@ -10,6 +10,7 @@ import {
   CommentOutlined,
 } from '@ant-design/icons';
 import Link from 'next/link';
+import { useWindowWidth } from '@react-hook/window-size';
 
 const { Sider } = Layout;
 
@@ -24,10 +25,15 @@ function getItem(label, key, icon, children, type) {
 }
 
 const AdminNav = () => {
+  const [collapsed, setCollapsed] = useState(false);
+  const [current, setCurrent] = useState('');
+
+  const activeName = (name) => `${current === name ? 'active' : ''}`;
+
   const items = [
     getItem(
       <Link href={'/admin'} passHref>
-        <a>Dashboard</a>
+        <a className={activeName('/admin')}>Dashboard</a>
       </Link>,
       '1',
       <SettingOutlined />
@@ -35,19 +41,19 @@ const AdminNav = () => {
     getItem('Posts', 'sub1', <PushpinOutlined />, [
       getItem(
         <Link href={'/admin/posts'} passHref>
-          <a>All Posts</a>
+          <a className={activeName('/admin/posts')}>All Posts</a>
         </Link>,
         '2'
       ),
       getItem(
         <Link href={'/admin/posts/new'} passHref>
-          <a>Add New Post</a>
+          <a className={activeName('/admin/posts/new')}>Add New Post</a>
         </Link>,
         '3'
       ),
       getItem(
         <Link href={'/admin/categories'} passHref>
-          <a>Categories</a>
+          <a className={activeName('/admin/categories')}>Categories</a>
         </Link>,
         '4'
       ),
@@ -56,20 +62,20 @@ const AdminNav = () => {
     getItem('Media', 'sub2', <CameraOutlined />, [
       getItem(
         <Link href={'/admin/media/library'} passHref>
-          <a>Library</a>
+          <a className={activeName('/admin/media/library')}>Library</a>
         </Link>,
         '5'
       ),
       getItem(
         <Link href={'/admin/media/new'} passHref>
-          <a>Add New</a>
+          <a className={activeName('/admin/media/new')}>Add New</a>
         </Link>,
         '6'
       ),
     ]),
     getItem(
       <Link href={'/admin/comments'} passHref>
-        <a>Comments</a>
+        <a className={activeName('/admin/comments')}>Comments</a>
       </Link>,
       '7',
       <CommentOutlined />
@@ -77,42 +83,68 @@ const AdminNav = () => {
     getItem('Users', 'sub3', <UserSwitchOutlined />, [
       getItem(
         <Link href={'/admin/users'} passHref>
-          <a>All Users</a>
+          <a className={activeName('/admin/users')}>All Users</a>
         </Link>,
         '8'
       ),
       getItem(
         <Link href={'/admin/users/new'} passHref>
-          <a>Add New</a>
+          <a className={activeName('/admin/users/new')}>Add New</a>
         </Link>,
         '12'
       ),
     ]),
     getItem(
-      <Link href={'/admin/userid'} passHref>
-        <a>Profile</a>
+      <Link href={'/admin/users/1'} passHref>
+        <a className={activeName('/admin/users/1')}>Profile</a>
       </Link>,
       '9',
       <UserOutlined />
     ),
     getItem(
       <Link href={'/admin/customize'} passHref>
-        <a>Customized</a>
+        <a className={activeName('/admin/customize')}>Customized</a>
       </Link>,
       '10',
       <BgColorsOutlined />
     ),
   ];
-  const [collapsed, setCollapsed] = useState(false);
 
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
-  };
+  useEffect(() => {
+    typeof window !== 'undefined' && setCurrent(window.location.pathname);
+  }, [typeof window !== 'undefined' && window.location.pathname]);
+
+  // hooks
+  const onlyWidth = useWindowWidth();
+
+  // resize method with hooks
+  useEffect(() => {
+    onlyWidth < 800 ? setCollapsed(true) : setCollapsed(false);
+  }, [onlyWidth < 800]);
+
+  // resize method without hooks
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     if (window.innerWidth > 768) {
+  //       setCollapsed(false);
+  //     } else {
+  //       setCollapsed(true);
+  //     }
+  //   };
+  //   window.addEventListener('resize', handleResize);
+  //   return () => {
+  //     window.removeEventListener('resize', handleResize);
+  //   };
+  // }, []);
+
+  typeof window !== 'undefined' && console.log(window.location.pathname);
+  console.log(current);
+
+  const toggleCollapsed = () => setCollapsed(!collapsed);
 
   return (
     <Sider collapsible collapsed={collapsed} onCollapse={toggleCollapsed}>
       <Menu
-        defaultSelectedKeys={['1']}
         defaultOpenKeys={['sub1', 'sub2', 'sub3']}
         mode="inline"
         items={items}
