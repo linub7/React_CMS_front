@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Menu } from 'antd';
 import {
   MailOutlined,
   AppstoreOutlined,
   SettingOutlined,
+  UserAddOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
 import ToggleTheme from 'components/ToggleTheme';
 import { ThemeContext } from 'context/theme';
@@ -11,8 +13,17 @@ import { useContext } from 'react';
 import { useRouter } from 'next/router';
 
 const TopNav = () => {
-  const { toggleTheme } = useContext(ThemeContext);
   const router = useRouter();
+  const { toggleTheme } = useContext(ThemeContext);
+  const [current, setCurrent] = useState(router.pathname.split('/')[1]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      router.pathname === '/'
+        ? setCurrent('cms')
+        : setCurrent(router.pathname.split('/')[1]);
+    }
+  }, [router.pathname]);
 
   const items = [
     {
@@ -27,7 +38,7 @@ const TopNav = () => {
     {
       label: 'Signup',
       key: 'signup',
-      icon: <AppstoreOutlined />,
+      icon: <UserAddOutlined />,
       onClick: () => {
         router.push('/signup');
         setCurrent();
@@ -36,7 +47,7 @@ const TopNav = () => {
     {
       label: 'Signin',
       key: 'signin',
-      icon: <AppstoreOutlined />,
+      icon: <UserOutlined />,
       onClick: () => {
         router.push('/signin');
         setCurrent('');
@@ -88,9 +99,20 @@ const TopNav = () => {
       onClick: toggleTheme,
     },
   ];
-  const [current, setCurrent] = useState('cms');
 
-  return <Menu selectedKeys={[current]} mode="horizontal" items={items} />;
+  const handleCurrent = (e) => {
+    router.pathname === '/' ? setCurrent('cms') : setCurrent(e.key);
+  };
+
+  return (
+    <Menu
+      onClick={handleCurrent}
+      selectedKeys={[current]}
+      mode="horizontal"
+      items={items}
+      theme="dark"
+    />
+  );
 };
 
 export default TopNav;
