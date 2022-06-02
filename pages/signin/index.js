@@ -66,7 +66,7 @@ const Signin = () => {
                 {
                   type: 'email',
                   required: true,
-                  message: 'Please input your Name!',
+                  message: 'Please input your Email!',
                 },
               ]}
             >
@@ -96,7 +96,7 @@ const Signin = () => {
               />
             </Form.Item>
 
-            <Link href={'/signup'}>
+            <Link href={'/forgot-password'}>
               <a>Forgot password</a>
             </Link>
             <br />
