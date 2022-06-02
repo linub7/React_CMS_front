@@ -1,12 +1,46 @@
-import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
+import { useState, useContext } from 'react';
+import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Button, Col, Form, Input, Row } from 'antd';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import toast from 'react-hot-toast';
+import axios from 'axios';
+import { AuthContext } from 'context/auth';
+import Cookies from 'js-cookie';
 
 const Signin = () => {
-  const onFinish = (values) => {
-    console.log('Received values of form: ', values);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const { setAuth } = useContext(AuthContext);
+
+  const onFinish = async (values) => {
+    setLoading(true);
+    try {
+      const { data } = await axios.post('/signin', values);
+      if (data?.error) {
+        toast.error(data?.error);
+      } else {
+        // save in context
+        setAuth({
+          user: data?.user,
+          token: data?.token,
+        });
+        // save in cookies
+        Cookies.set('auth', JSON.stringify(data));
+        toast.success('Successfully logged in');
+        setTimeout(() => {
+          router.push('/');
+        }, 1000);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      toast.error('Something went wrong, try again later');
+      setLoading(false);
+    }
   };
+
   return (
     <>
       <Head>
@@ -19,25 +53,12 @@ const Signin = () => {
             name="normal_login"
             className="login-form"
             initialValues={{
-              remember: false,
+              remember: true,
+              email: 'linub7@gmail.com',
+              password: '123456',
             }}
             onFinish={onFinish}
           >
-            {/* name */}
-            {/* <Form.Item
-            name="name"
-            rules={[
-              {
-                required: true,
-                message: 'Please input your Name!',
-              },
-            ]}
-          >
-            <Input
-              prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="Name"
-            />
-          </Form.Item> */}
             {/* email */}
             <Form.Item
               name="email"
@@ -62,6 +83,10 @@ const Signin = () => {
                   required: true,
                   message: 'Please input your Password!',
                 },
+                {
+                  min: 6,
+                  message: 'Password must be at least 6 characters',
+                },
               ]}
             >
               <Input.Password
@@ -81,10 +106,11 @@ const Signin = () => {
                 type="primary"
                 htmlType="submit"
                 className="login-form-button"
+                loading={loading}
               >
                 Login
               </Button>
-              <br />
+              <div className="line"></div>
               Or{' '}
               <Link href={'/signup'}>
                 <a>Register</a>

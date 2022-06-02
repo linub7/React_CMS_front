@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Menu, Layout } from 'antd';
 import {
   PushpinOutlined,
@@ -136,9 +136,6 @@ const AdminNav = () => {
   //     window.removeEventListener('resize', handleResize);
   //   };
   // }, []);
-
-  typeof window !== 'undefined' && console.log(window.location.pathname);
-  console.log(current);
 
   const toggleCollapsed = () => setCollapsed(!collapsed);
 

@@ -6,16 +6,30 @@ import {
   SettingOutlined,
   UserAddOutlined,
   UserOutlined,
+  LogoutOutlined,
+  LoginOutlined,
 } from '@ant-design/icons';
 import ToggleTheme from 'components/ToggleTheme';
 import { ThemeContext } from 'context/theme';
 import { useContext } from 'react';
 import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
+import { AuthContext } from 'context/auth';
 
 const TopNav = () => {
   const router = useRouter();
+  const { setAuth, auth } = useContext(AuthContext);
   const { toggleTheme } = useContext(ThemeContext);
   const [current, setCurrent] = useState(router.pathname.split('/')[1]);
+
+  const handleLogout = () => {
+    Cookies.remove('auth');
+    setAuth({
+      user: null,
+      token: '',
+    });
+    router.push('/signin');
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -35,26 +49,29 @@ const TopNav = () => {
         setCurrent('cms');
       },
     },
-    {
+    !auth?.token && {
       label: 'Signup',
       key: 'signup',
       icon: <UserAddOutlined />,
+      style: {
+        marginLeft: 'auto',
+      },
       onClick: () => {
         router.push('/signup');
         setCurrent();
       },
     },
-    {
+    !auth?.token && {
       label: 'Signin',
       key: 'signin',
-      icon: <UserOutlined />,
+      icon: <LoginOutlined />,
       onClick: () => {
         router.push('/signin');
         setCurrent('');
       },
     },
-    {
-      label: 'Dashboard',
+    auth?.token && {
+      label: `Hi ${auth?.user?.name}`,
       key: 'dashboard',
       icon: <SettingOutlined />,
       style: {
@@ -92,9 +109,13 @@ const TopNav = () => {
         // },
       ],
     },
+    auth?.token && {
+      label: 'Signout',
+      key: 'signout',
+      icon: <LogoutOutlined />,
+      onClick: handleLogout,
+    },
     {
-      // label: '',
-      // key: 'theme',
       icon: <ToggleTheme />,
       onClick: toggleTheme,
     },
