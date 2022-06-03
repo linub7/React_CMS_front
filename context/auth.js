@@ -13,8 +13,10 @@ const AuthProvider = ({ children }) => {
   // config axios
   if (typeof window !== 'undefined') {
     axios.defaults.baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
+    axios.defaults.headers.common['Authorization'] = `Bearer ${auth?.token}`;
   } else {
     axios.defaults.baseURL = process.env.BACKEND_URL;
+    axios.defaults.headers.common['Authorization'] = `Bearer ${auth?.token}`;
   }
 
   useEffect(() => {

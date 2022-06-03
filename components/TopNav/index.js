@@ -5,7 +5,6 @@ import {
   AppstoreOutlined,
   SettingOutlined,
   UserAddOutlined,
-  UserOutlined,
   LogoutOutlined,
   LoginOutlined,
 } from '@ant-design/icons';
@@ -49,13 +48,17 @@ const TopNav = () => {
         setCurrent('cms');
       },
     },
+    {
+      icon: <ToggleTheme />,
+      onClick: toggleTheme,
+      style: {
+        marginLeft: 'auto',
+      },
+    },
     !auth?.token && {
       label: 'Signup',
       key: 'signup',
       icon: <UserAddOutlined />,
-      style: {
-        marginLeft: 'auto',
-      },
       onClick: () => {
         router.push('/signup');
         setCurrent();
@@ -71,26 +74,44 @@ const TopNav = () => {
       },
     },
     auth?.token && {
-      label: `Hi ${auth?.user?.name}`,
+      label: `Hi ${auth?.user?.role === 'admin' ? 'Admin' : auth?.user?.name}`,
       key: 'dashboard',
       icon: <SettingOutlined />,
-      style: {
-        marginLeft: 'auto',
-      },
+
       children: [
         {
           type: 'group',
           label: 'Management',
           children: [
-            {
-              label: 'Admin',
-              key: 'admin',
-              icon: <AppstoreOutlined />,
-              onClick: () => {
-                router.push('/admin');
-                setCurrent('admin');
-              },
-            },
+            auth?.user?.role === 'admin'
+              ? {
+                  label: 'Dashboard',
+                  key: 'admin',
+                  icon: <AppstoreOutlined />,
+                  onClick: () => {
+                    router.push('/admin');
+                    setCurrent('admin');
+                  },
+                }
+              : auth?.user?.role === 'author'
+              ? {
+                  label: 'Dashboard',
+                  key: 'author',
+                  icon: <AppstoreOutlined />,
+                  onClick: () => {
+                    router.push('/author');
+                    setCurrent('author');
+                  },
+                }
+              : {
+                  label: 'Dashboard',
+                  key: 'subscriber',
+                  icon: <AppstoreOutlined />,
+                  onClick: () => {
+                    router.push('/subscriber');
+                    setCurrent('subscriber');
+                  },
+                },
           ],
         },
         // {
@@ -114,10 +135,6 @@ const TopNav = () => {
       key: 'signout',
       icon: <LogoutOutlined />,
       onClick: handleLogout,
-    },
-    {
-      icon: <ToggleTheme />,
-      onClick: toggleTheme,
     },
   ];
 

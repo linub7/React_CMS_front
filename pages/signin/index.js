@@ -30,7 +30,11 @@ const Signin = () => {
         Cookies.set('auth', JSON.stringify(data));
         toast.success('Successfully logged in');
         setTimeout(() => {
-          router.push('/');
+          data?.user?.role === 'admin'
+            ? router.push('/admin')
+            : data?.user?.role === 'author'
+            ? router.push('/author')
+            : router.push('/subscriber');
         }, 1000);
       }
       setLoading(false);
