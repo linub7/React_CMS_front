@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
 import { Row, Col, Form, Button, Input, Checkbox } from 'antd';
 import Head from 'next/head';
@@ -12,7 +12,13 @@ import { AuthContext } from 'context/auth';
 const Signup = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const { setAuth } = useContext(AuthContext);
+  const { auth, setAuth } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (auth?.token) {
+      router.push('/');
+    }
+  }, [auth]);
 
   const onFinish = async (values) => {
     setLoading(true);

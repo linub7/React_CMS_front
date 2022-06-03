@@ -1,5 +1,5 @@
-import { useState, useContext } from 'react';
-import { LockOutlined, MailOutlined } from '@ant-design/icons';
+import { useEffect, useState, useContext } from 'react';
+import { LoadingOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Button, Col, Form, Input, Row } from 'antd';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -12,7 +12,13 @@ import Cookies from 'js-cookie';
 const Signin = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const { setAuth } = useContext(AuthContext);
+  const { auth, setAuth } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (auth?.token) {
+      router.push('/');
+    }
+  }, [auth]);
 
   const onFinish = async (values) => {
     setLoading(true);
