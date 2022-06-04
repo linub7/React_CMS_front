@@ -7,6 +7,7 @@ import React from 'react';
 import AdminNav from '../nav/AdminNav';
 import { LoadingOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import { toCapitalize } from 'utils';
 
 const { Content } = Layout;
 
@@ -14,16 +15,15 @@ const AdminLayout = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const router = useRouter();
-  const { pathname } = router;
-  const title =
-    pathname.split('/').pop().charAt(0).toUpperCase() +
-    pathname.split('/').pop().slice(1);
+  let { pathname } = router;
+  pathname = pathname.split('/').pop();
+  const title = toCapitalize(pathname);
 
   // secure admin pages
   const { auth } = useContext(AuthContext);
 
   useEffect(() => {
-    auth?.token ? getCurrentAdmin() : router.push('/');
+    auth?.token && getCurrentAdmin();
   }, [auth?.token]);
 
   const getCurrentAdmin = async () => {
