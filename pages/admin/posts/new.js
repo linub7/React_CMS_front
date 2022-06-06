@@ -2,13 +2,18 @@ import { useContext, useState, useEffect } from 'react';
 import AdminLayout from 'components/admin/layout/AdminLayout';
 import { ThemeContext } from 'context/theme';
 import Editor from 'rich-markdown-editor';
-import { Col, Input, Row, Select } from 'antd';
+import { Button, Col, Input, Modal, Row, Select } from 'antd';
 import axios from 'axios';
-import Resizer from 'react-image-file-resizer';
+import { handleUploadImage } from 'functions/upload';
+import { EyeOutlined } from '@ant-design/icons';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/router';
 
 const { Option } = Select;
 
 const NewPosts = () => {
+  const router = useRouter();
+
   const savedTitle = () => {
     if (typeof window !== 'undefined') {
       if (localStorage.getItem('post-title')) {
@@ -28,6 +33,8 @@ const NewPosts = () => {
   const [title, setTitle] = useState(savedTitle());
   const [loadedCategories, setLoadedCategories] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [isVisibleModal, setIsVisibleModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { theme } = useContext(ThemeContext);
   const handleInputChange = (e) => {
@@ -57,34 +64,30 @@ const NewPosts = () => {
     }
   };
 
-  const handleResizeFile = (file) => {
-    return new Promise((resolve, reject) => {
-      Resizer.imageFileResizer(
-        file,
-        720,
-        400,
-        'JPEG',
-        100,
-        0,
-        (uri) => {
-          resolve(uri);
-        },
-        'base64'
-      );
-    });
-  };
-
-  const handleUploadImage = async (file) => {
-    console.log(file);
+  const handlePublish = async () => {
+    setLoading(true);
     try {
-      const image = await handleResizeFile(file);
-      console.log('Image Base 64: ', image);
-      return;
-      const { data } = await axios.post('/upload-image', { image });
-      console.log('upload file response', data);
-      return data?.url;
+      const { data } = await axios.post('/create-post', {
+        title,
+        content,
+        categories,
+      });
+      if (data?.error) {
+        toast.error(data?.error);
+        setLoading(false);
+      } else {
+        console.log(data);
+        toast.success('Post created successfully');
+        localStorage.removeItem('post-title');
+        localStorage.removeItem('post-content');
+        setCategories([]);
+        setLoading(false);
+        router.push('/admin/posts');
+      }
     } catch (error) {
       console.log(error);
+      toast.error('Something went wrong, try again later.');
+      setLoading(false);
     }
   };
 
@@ -101,14 +104,24 @@ const NewPosts = () => {
           />
 
           <div className="line"></div>
-          <Editor
-            defaultValue={content}
-            dark={theme === 'dark' ? true : false}
-            onChange={handleContentChange}
-            uploadImage={handleUploadImage}
-          />
+          <div className="editor-scroll">
+            <Editor
+              defaultValue={content}
+              dark={theme === 'dark' ? true : false}
+              onChange={handleContentChange}
+              uploadImage={handleUploadImage}
+            />
+          </div>
         </Col>
         <Col xs={22} sm={22} lg={8} offset={1}>
+          <Button
+            onClick={() => setIsVisibleModal(true)}
+            style={{ margin: '10px 0 10px 0', width: '100%' }}
+          >
+            <EyeOutlined />
+            Preview
+          </Button>
+
           <h4>Categories</h4>
           <Select
             mode="multiple"
@@ -121,7 +134,32 @@ const NewPosts = () => {
               <Option key={category.name}>{category.name}</Option>
             ))}
           </Select>
+
+          <Button
+            type="primary"
+            onClick={handlePublish}
+            style={{ margin: '10px 0 10px 0', width: '100%' }}
+            loading={loading}
+          >
+            Publish
+          </Button>
         </Col>
+        <Modal
+          title="Preview"
+          centered
+          visible={isVisibleModal}
+          onOk={() => setIsVisibleModal(false)}
+          onCancel={() => setIsVisibleModal(false)}
+          footer={null}
+          width={720}
+        >
+          <h1>{title}</h1>
+          <Editor
+            defaultValue={content}
+            dark={theme === 'dark' ? true : false}
+            readOnly
+          />
+        </Modal>
       </Row>
     </AdminLayout>
   );
