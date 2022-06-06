@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Col, List, Row, Tooltip } from 'antd';
 import AdminLayout from 'components/admin/layout/AdminLayout';
@@ -6,17 +6,16 @@ import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { toCapitalize } from 'utils';
+import { PostContext } from 'context/post';
 
 const Posts = () => {
   const router = useRouter();
-  const [posts, setPosts] = useState([]);
+  // const [posts, setPosts] = useState([]);
+
+  const { posts, setPosts } = useContext(PostContext);
 
   useEffect(() => {
     getPosts();
-
-    return () => {
-      setPosts([]);
-    };
   }, []);
 
   const getPosts = async () => {
@@ -26,6 +25,7 @@ const Posts = () => {
         toast.error(data?.error);
       } else {
         setPosts(data?.posts);
+        localStorage.setItem('posts', JSON.stringify(data?.posts));
       }
     } catch (error) {
       console.log(error);
@@ -42,6 +42,10 @@ const Posts = () => {
         } else {
           toast.success('Post deleted successfully');
           setPosts(posts.filter((post) => post._id !== postId));
+          localStorage.setItem(
+            'posts',
+            JSON.stringify(posts.filter((post) => post._id !== postId))
+          );
         }
       } catch (error) {
         console.log(error);

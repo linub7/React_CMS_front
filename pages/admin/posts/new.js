@@ -35,6 +35,7 @@ const NewPosts = () => {
   const [categories, setCategories] = useState([]);
   const [isVisibleModal, setIsVisibleModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { posts, setPosts } = useContext(ThemeContext);
 
   const { theme } = useContext(ThemeContext);
   const handleInputChange = (e) => {

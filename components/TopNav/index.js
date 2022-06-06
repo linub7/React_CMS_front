@@ -7,6 +7,7 @@ import {
   UserAddOutlined,
   LogoutOutlined,
   LoginOutlined,
+  AntCloudOutlined,
 } from '@ant-design/icons';
 import ToggleTheme from 'components/ToggleTheme';
 import { ThemeContext } from 'context/theme';
@@ -42,7 +43,7 @@ const TopNav = () => {
     {
       label: 'CMS',
       key: 'cms',
-      icon: <MailOutlined />,
+      icon: <AntCloudOutlined />,
       onClick: () => {
         router.push('/');
         setCurrent('cms');

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Button, Col, Form, Input, List, Modal, Row, Tooltip } from 'antd';
 import AdminLayout from 'components/admin/layout/AdminLayout';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
@@ -7,13 +7,16 @@ import axios from 'axios';
 import { useWindowWidth } from '@react-hook/window-size';
 import CategoryUpdateModal from 'components/shared/CategoryUpdateModal';
 import { toCapitalize } from 'utils';
+import { CategoryContext } from 'context/category';
 
 const Categories = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [categories, setCategories] = useState([]);
+  // const [categories, setCategories] = useState([]);
   const [isVisibleModal, setIsVisibleModal] = useState(false);
   const [updatingCategory, setUpdatingCategory] = useState({});
+
+  const { categories, setCategories } = useContext(CategoryContext);
 
   const handleCloseModal = () => {
     setIsVisibleModal(false);
@@ -24,16 +27,15 @@ const Categories = () => {
 
   useEffect(() => {
     getCategories();
-
-    return () => {
-      setCategories([]);
-    };
   }, []);
 
   const getCategories = async () => {
     try {
       const { data } = await axios.get('/categories');
       setCategories(data?.categories);
+      JSON.stringify(
+        localStorage.setItem('categories', JSON.stringify(data?.categories))
+      );
     } catch (error) {
       console.log(error);
     }
@@ -49,6 +51,10 @@ const Categories = () => {
         toast.success('Category added successfully');
         form.resetFields();
         setCategories([data?.category, ...categories]);
+        localStorage.setItem(
+          'categories',
+          JSON.stringify([data?.category, ...categories])
+        );
       }
       setLoading(false);
     } catch (error) {
@@ -72,6 +78,12 @@ const Categories = () => {
           toast.success('Category deleted successfully');
           setCategories(
             categories.filter((category) => category._id !== categoryId)
+          );
+          localStorage.setItem(
+            'categories',
+            JSON.stringify(
+              categories.filter((category) => category._id !== categoryId)
+            )
           );
         }
       } catch (error) {
