@@ -5,9 +5,10 @@ import Editor from 'rich-markdown-editor';
 import { Button, Col, Input, Modal, Row, Select } from 'antd';
 import axios from 'axios';
 import { handleUploadImage } from 'functions/upload';
-import { EyeOutlined } from '@ant-design/icons';
+import { EyeOutlined, UploadOutlined } from '@ant-design/icons';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
+import MediaTabs from 'components/admin/media/MediaTabs';
 
 const { Option } = Select;
 
@@ -35,7 +36,7 @@ const NewPosts = () => {
   const [categories, setCategories] = useState([]);
   const [isVisibleModal, setIsVisibleModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { posts, setPosts } = useContext(ThemeContext);
+  const [isFeaturedModalVisible, setIsFeaturedModalVisible] = useState(false);
 
   const { theme } = useContext(ThemeContext);
   const handleInputChange = (e) => {
@@ -122,6 +123,13 @@ const NewPosts = () => {
             <EyeOutlined />
             Preview
           </Button>
+          <Button
+            onClick={() => setIsFeaturedModalVisible(true)}
+            style={{ margin: '10px 0 10px 0', width: '100%' }}
+          >
+            <UploadOutlined />
+            Featured Image
+          </Button>
 
           <h4>Categories</h4>
           <Select
@@ -160,6 +168,16 @@ const NewPosts = () => {
             dark={theme === 'dark' ? true : false}
             readOnly
           />
+        </Modal>
+        <Modal
+          title="Media"
+          visible={isFeaturedModalVisible}
+          onOk={() => setIsFeaturedModalVisible(false)}
+          onCancel={() => setIsFeaturedModalVisible(false)}
+          footer={null}
+          width={720}
+        >
+          <MediaTabs />
         </Modal>
       </Row>
     </AdminLayout>
