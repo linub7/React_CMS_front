@@ -15,10 +15,17 @@ import { useContext } from 'react';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 import { AuthContext } from 'context/auth';
+import { MediaContext } from 'context/media';
+import { PostContext } from 'context/post';
+import { CategoryContext } from 'context/category';
 
 const TopNav = () => {
   const router = useRouter();
   const { setAuth, auth } = useContext(AuthContext);
+  const { setMedia } = useContext(MediaContext);
+  const { setPosts } = useContext(PostContext);
+  const { setCategories } = useContext(CategoryContext);
+
   const { toggleTheme } = useContext(ThemeContext);
   const [current, setCurrent] = useState(router.pathname.split('/')[1]);
 
@@ -28,6 +35,16 @@ const TopNav = () => {
       user: null,
       token: '',
     });
+    setMedia({
+      images: [],
+      selected: '',
+      showMediaModal: false,
+    });
+    localStorage.removeItem('media');
+    setPosts([]);
+    localStorage.removeItem('posts');
+    setCategories([]);
+    localStorage.removeItem('categories');
     router.push('/signin');
   };
 

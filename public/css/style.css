@@ -33,3 +33,9 @@
 .ant-upload-drag {
   height: 150px !important;
 }
+
+.close-circle {
+  transform: translateX(-5px);
+  color: #d32029;
+  cursor: pointer;
+}

@@ -2,13 +2,14 @@ import { useContext, useState, useEffect } from 'react';
 import AdminLayout from 'components/admin/layout/AdminLayout';
 import { ThemeContext } from 'context/theme';
 import Editor from 'rich-markdown-editor';
-import { Button, Col, Input, Modal, Row, Select } from 'antd';
+import { Button, Col, Image, Input, Modal, Row, Select } from 'antd';
 import axios from 'axios';
 import { handleUploadImage } from 'functions/upload';
 import { EyeOutlined, UploadOutlined } from '@ant-design/icons';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import MediaTabs from 'components/admin/media/MediaTabs';
+import { MediaContext } from 'context/media';
 
 const { Option } = Select;
 
@@ -39,6 +40,8 @@ const NewPosts = () => {
   const [isFeaturedModalVisible, setIsFeaturedModalVisible] = useState(false);
 
   const { theme } = useContext(ThemeContext);
+  const { media, setMedia } = useContext(MediaContext);
+
   const handleInputChange = (e) => {
     setTitle(e.target.value);
     localStorage?.setItem('post-title', JSON.stringify(e.target.value));
@@ -73,6 +76,7 @@ const NewPosts = () => {
         title,
         content,
         categories,
+        featuredImage: media?.selected?._id,
       });
       if (data?.error) {
         toast.error(data?.error);
@@ -83,6 +87,11 @@ const NewPosts = () => {
         localStorage.removeItem('post-title');
         localStorage.removeItem('post-content');
         setCategories([]);
+        setMedia({ ...media, selected: '' });
+        localStorage.setItem(
+          'media',
+          JSON.stringify({ ...media, selected: '' })
+        );
         setLoading(false);
         router.push('/admin/posts');
       }
@@ -92,6 +101,8 @@ const NewPosts = () => {
       setLoading(false);
     }
   };
+
+  console.log(media);
 
   return (
     <AdminLayout>
@@ -124,7 +135,7 @@ const NewPosts = () => {
             Preview
           </Button>
           <Button
-            onClick={() => setIsFeaturedModalVisible(true)}
+            onClick={() => setMedia({ ...media, showMediaModal: true })}
             style={{ margin: '10px 0 10px 0', width: '100%' }}
           >
             <UploadOutlined />
@@ -143,6 +154,16 @@ const NewPosts = () => {
               <Option key={category.name}>{category.name}</Option>
             ))}
           </Select>
+
+          {media?.selected && (
+            <div style={{ marginTop: '15px' }}>
+              <Image
+                width="100%"
+                src={media?.selected?.url}
+                alt={media?.selected?._id}
+              />
+            </div>
+          )}
 
           <Button
             type="primary"
@@ -171,9 +192,9 @@ const NewPosts = () => {
         </Modal>
         <Modal
           title="Media"
-          visible={isFeaturedModalVisible}
-          onOk={() => setIsFeaturedModalVisible(false)}
-          onCancel={() => setIsFeaturedModalVisible(false)}
+          visible={media?.showMediaModal}
+          onOk={() => setMedia({ ...media, showMediaModal: false })}
+          onCancel={() => setMedia({ ...media, showMediaModal: false })}
           footer={null}
           width={720}
         >

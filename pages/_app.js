@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from 'context/auth';
 import { PostProvider } from 'context/post';
 import { CategoryProvider } from 'context/category';
+import { MediaProvider } from 'context/media';
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -12,9 +13,11 @@ function MyApp({ Component, pageProps }) {
       <AuthProvider>
         <PostProvider>
           <CategoryProvider>
-            <Toaster />
-            <TopNav />
-            <Component {...pageProps} />
+            <MediaProvider>
+              <Toaster />
+              <TopNav />
+              <Component {...pageProps} />
+            </MediaProvider>
           </CategoryProvider>
         </PostProvider>
       </AuthProvider>

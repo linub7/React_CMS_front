@@ -2,10 +2,15 @@ import { createContext, useState, useEffect, useContext } from 'react';
 import { AuthContext } from './auth';
 import axios from 'axios';
 
-const PostContext = createContext();
+const MediaContext = createContext();
 
-const PostProvider = ({ children }) => {
-  const [posts, setPosts] = useState([]);
+const MediaProvider = ({ children }) => {
+  const [media, setMedia] = useState({
+    images: [],
+    selected: '',
+    showMediaModal: false,
+  });
+
   const { auth } = useContext(AuthContext);
 
   if (typeof window !== 'undefined') {
@@ -19,16 +24,16 @@ const PostProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    if (localStorage.getItem('posts')) {
-      setPosts(JSON.parse(localStorage.getItem('posts')));
+    if (localStorage.getItem('media')) {
+      setMedia(JSON.parse(localStorage.getItem('media')));
     }
   }, []);
 
   return (
-    <PostContext.Provider value={{ posts, setPosts }}>
+    <MediaContext.Provider value={{ media, setMedia }}>
       {children}
-    </PostContext.Provider>
+    </MediaContext.Provider>
   );
 };
 
-export { PostContext, PostProvider };
+export { MediaContext, MediaProvider };
