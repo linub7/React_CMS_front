@@ -1,16 +1,15 @@
-import { useState, useEffect, useContext } from 'react';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { useEffect, useContext } from 'react';
+import { PlusOutlined } from '@ant-design/icons';
 import { Button, Col, List, Row, Tooltip } from 'antd';
 import AdminLayout from 'components/admin/layout/AdminLayout';
 import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-import { toCapitalize } from 'utils';
 import { PostContext } from 'context/post';
+import PostsList from 'components/posts/PostsList';
 
 const Posts = () => {
   const router = useRouter();
-  // const [posts, setPosts] = useState([]);
 
   const { posts, setPosts } = useContext(PostContext);
 
@@ -68,47 +67,7 @@ const Posts = () => {
           </Button>
           <h1 style={{ marginTop: '15px' }}>{posts?.length} Posts:</h1>
           <div className="line"></div>
-          <List
-            itemLayout="horizontal"
-            dataSource={posts}
-            renderItem={(item) => (
-              <div key={item._id}>
-                <List.Item
-                  style={{ cursor: 'pointer' }}
-                  key={item._id}
-                  actions={[
-                    <Tooltip
-                      placement="left"
-                      key={item._id}
-                      title="Edit"
-                      color={'#f1c40f'}
-                    >
-                      <EditOutlined
-                        style={{ color: '#f1c40f' }}
-                        onClick={() =>
-                          router.push(`/admin/posts/edit/${item.slug}`)
-                        }
-                      />
-                    </Tooltip>,
-                    <Tooltip
-                      placement="top"
-                      key={item._id + 'delete'}
-                      title="Delete"
-                      color={'#e74c3c'}
-                    >
-                      <DeleteOutlined
-                        style={{ color: '#e74c3c' }}
-                        onClick={() => handleDeletePost(item._id)}
-                      />
-                    </Tooltip>,
-                  ]}
-                >
-                  <List.Item.Meta title={toCapitalize(item?.title)} />
-                </List.Item>
-                <div className="line"></div>
-              </div>
-            )}
-          ></List>
+          <PostsList posts={posts} handleDeletePost={handleDeletePost} />
         </Col>
       </Row>
     </AdminLayout>
