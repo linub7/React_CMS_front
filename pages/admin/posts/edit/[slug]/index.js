@@ -31,7 +31,6 @@ const EditPost = () => {
   const [categories, setCategories] = useState([]); // post's existing categories
   const [isVisibleModal, setIsVisibleModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isFeaturedModalVisible, setIsFeaturedModalVisible] = useState(false);
   const [featuredImage, setFeaturedImage] = useState({});
   const [id, setId] = useState('');
   const [getPostLoading, setGetPostLoading] = useState(true);
@@ -41,12 +40,10 @@ const EditPost = () => {
 
   const handleInputChange = (e) => {
     setTitle(e.target.value);
-    localStorage?.setItem('post-title', JSON.stringify(e.target.value));
   };
 
   const handleContentChange = (value) => {
     setContent(value());
-    localStorage.setItem('post-content', JSON.stringify(value()));
   };
 
   useEffect(() => {
@@ -113,10 +110,6 @@ const EditPost = () => {
         toast.success('Post Edited successfully');
         setCategories([]);
         setMedia({ ...media, selected: null });
-        localStorage.setItem(
-          'media',
-          JSON.stringify({ ...media, selected: null })
-        );
         setLoading(false);
         router.push('/admin/posts');
       }

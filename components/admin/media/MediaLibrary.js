@@ -97,6 +97,7 @@ const MediaLibrary = () => {
             images: media.images.filter((i) => i._id !== image._id),
           })
         );
+        toast.success('Image deleted successfully');
       }
     } catch (error) {
       console.log(error);
