@@ -1,13 +1,14 @@
 import { useContext } from 'react';
 import { AuthContext } from 'context/auth';
+import ClientLayout from 'components/client/layout/ClientLayout';
 
 const Home = () => {
   const { auth } = useContext(AuthContext);
 
   return (
-    <div>
+    <ClientLayout>
       <h1>Home</h1>
-    </div>
+    </ClientLayout>
   );
 };
 

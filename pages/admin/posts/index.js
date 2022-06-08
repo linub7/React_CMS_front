@@ -54,10 +54,6 @@ const Posts = () => {
     }
   };
 
-  const handleEditPost = (post) => {
-    console.log(post);
-  };
-
   return (
     <AdminLayout>
       <Row>
@@ -89,7 +85,9 @@ const Posts = () => {
                     >
                       <EditOutlined
                         style={{ color: '#f1c40f' }}
-                        onClick={() => handleEditPost(item)}
+                        onClick={() =>
+                          router.push(`/admin/posts/edit/${item.slug}`)
+                        }
                       />
                     </Tooltip>,
                     <Tooltip

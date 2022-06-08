@@ -8,6 +8,8 @@ import {
   LogoutOutlined,
   LoginOutlined,
   AntCloudOutlined,
+  CloudOutlined,
+  HddOutlined,
 } from '@ant-design/icons';
 import ToggleTheme from 'components/ToggleTheme';
 import { ThemeContext } from 'context/theme';
@@ -60,12 +62,22 @@ const TopNav = () => {
     {
       label: 'CMS',
       key: 'cms',
-      icon: <AntCloudOutlined />,
+      icon: <CloudOutlined />,
       onClick: () => {
         router.push('/');
         setCurrent('cms');
       },
     },
+    {
+      label: 'POSTS',
+      key: 'posts',
+      icon: <HddOutlined />,
+      onClick: () => {
+        router.push('/posts');
+        setCurrent('posts');
+      },
+    },
+
     {
       icon: <ToggleTheme />,
       onClick: toggleTheme,

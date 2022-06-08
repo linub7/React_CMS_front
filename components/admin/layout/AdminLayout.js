@@ -15,15 +15,25 @@ const AdminLayout = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const router = useRouter();
-  let { pathname } = router;
-  pathname = pathname.split('/').pop();
-  const title = toCapitalize(pathname);
+  let {
+    pathname,
+    query: { slug },
+  } = router;
+  pathname =
+    pathname.split('/').pop() === 'admin'
+      ? 'Dashboard'
+      : pathname.split('/').pop();
+  const title = slug ? slug : toCapitalize(pathname);
 
   // secure admin pages
   const { auth } = useContext(AuthContext);
 
   useEffect(() => {
     auth?.token && getCurrentAdmin();
+
+    return () => {
+      setLoading(false);
+    };
   }, [auth?.token]);
 
   const getCurrentAdmin = async () => {

@@ -7,7 +7,7 @@ const MediaContext = createContext();
 const MediaProvider = ({ children }) => {
   const [media, setMedia] = useState({
     images: [],
-    selected: '',
+    selected: null,
     showMediaModal: false,
   });
 

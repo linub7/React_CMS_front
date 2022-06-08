@@ -5,7 +5,11 @@ import Editor from 'rich-markdown-editor';
 import { Button, Col, Image, Input, Modal, Row, Select } from 'antd';
 import axios from 'axios';
 import { handleUploadImage } from 'functions/upload';
-import { EyeOutlined, UploadOutlined } from '@ant-design/icons';
+import {
+  EyeOutlined,
+  LoadingOutlined,
+  UploadOutlined,
+} from '@ant-design/icons';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import MediaTabs from 'components/admin/media/MediaTabs';
@@ -13,31 +17,24 @@ import { MediaContext } from 'context/media';
 
 const { Option } = Select;
 
-const NewPost = () => {
+const EditPost = () => {
   const router = useRouter();
+  const {
+    query: { slug },
+  } = router;
 
-  const savedTitle = () => {
-    if (typeof window !== 'undefined') {
-      if (localStorage.getItem('post-title')) {
-        return JSON.parse(localStorage.getItem('post-title'));
-      }
-    }
-  };
+  const [post, setPost] = useState({});
 
-  const savedContent = () => {
-    if (typeof window !== 'undefined') {
-      if (localStorage.getItem('post-content')) {
-        return JSON.parse(localStorage.getItem('post-content'));
-      }
-    }
-  };
-  const [content, setContent] = useState(savedContent());
-  const [title, setTitle] = useState(savedTitle());
+  const [content, setContent] = useState('');
+  const [title, setTitle] = useState('');
   const [loadedCategories, setLoadedCategories] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState([]); // post's existing categories
   const [isVisibleModal, setIsVisibleModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isFeaturedModalVisible, setIsFeaturedModalVisible] = useState(false);
+  const [featuredImage, setFeaturedImage] = useState({});
+  const [id, setId] = useState('');
+  const [getPostLoading, setGetPostLoading] = useState(true);
 
   const { theme } = useContext(ThemeContext);
   const { media, setMedia } = useContext(MediaContext);
@@ -53,12 +50,39 @@ const NewPost = () => {
   };
 
   useEffect(() => {
-    getCategories();
+    getPost();
+  }, []);
 
+  useEffect(() => {
+    getCategories();
     return () => {
       setLoadedCategories([]);
     };
   }, []);
+
+  const getPost = async () => {
+    try {
+      const { data } = await axios.get(`/posts/${slug}`);
+      console.log(data);
+      if (data?.error) {
+        toast.error(data?.error);
+      } else {
+        setPost(data?.post);
+        setTitle(data?.post?.title);
+        setContent(data?.post?.content);
+        setFeaturedImage(data?.post?.featuredImage);
+        setId(data?.post?._id);
+        // push category names
+        let arr = [];
+        data?.post?.categories?.map((category) => arr.push(category.name));
+        setCategories(arr);
+        setGetPostLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Error fetching post');
+    }
+  };
 
   const getCategories = async () => {
     try {
@@ -69,23 +93,24 @@ const NewPost = () => {
     }
   };
 
-  const handlePublish = async () => {
+  const handleEditPost = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.post('/create-post', {
+      const { data } = await axios.put(`/posts/${post._id}`, {
         title,
         content,
         categories,
-        featuredImage: media?.selected?._id,
+        featuredImage: media?.selected?._id
+          ? media?.selected?._id
+          : featuredImage?._id
+          ? featuredImage?._id
+          : undefined,
       });
       if (data?.error) {
         toast.error(data?.error);
         setLoading(false);
       } else {
-        console.log(data);
-        toast.success('Post created successfully');
-        localStorage.removeItem('post-title');
-        localStorage.removeItem('post-content');
+        toast.success('Post Edited successfully');
         setCategories([]);
         setMedia({ ...media, selected: null });
         localStorage.setItem(
@@ -102,13 +127,11 @@ const NewPost = () => {
     }
   };
 
-  console.log(media);
-
   return (
     <AdminLayout>
       <Row>
         <Col xs={22} sm={22} lg={14} offset={1}>
-          <h1>Create new post</h1>
+          <h1>Edit post</h1>
           <Input
             placeholder="Give your post a title"
             size="large"
@@ -117,16 +140,20 @@ const NewPost = () => {
           />
 
           <div className="line"></div>
-          <div className="editor-scroll">
-            <Editor
-              defaultValue={content}
-              dark={theme === 'dark' ? true : false}
-              onChange={handleContentChange}
-              uploadImage={handleUploadImage}
-            />
-          </div>
+          {getPostLoading ? (
+            <LoadingOutlined style={{ fontSize: '24px' }} />
+          ) : (
+            <div className="editor-scroll">
+              <Editor
+                defaultValue={content}
+                dark={theme === 'dark' ? true : false}
+                onChange={handleContentChange}
+                uploadImage={handleUploadImage}
+              />
+            </div>
+          )}
         </Col>
-        <Col xs={22} sm={22} lg={8} offset={1}>
+        <Col xs={22} sm={22} lg={8} offset={1} style={{ marginTop: '25px' }}>
           <Button
             onClick={() => setIsVisibleModal(true)}
             style={{ margin: '10px 0 10px 0', width: '100%' }}
@@ -148,6 +175,7 @@ const NewPost = () => {
             allowClear={true}
             placeholder="Select Categories"
             style={{ width: '100%' }}
+            value={[...categories]}
             onChange={(value) => setCategories(value)}
           >
             {loadedCategories?.map((category) => (
@@ -155,7 +183,7 @@ const NewPost = () => {
             ))}
           </Select>
 
-          {media?.selected && (
+          {media?.selected ? (
             <div style={{ marginTop: '15px' }}>
               <Image
                 width="100%"
@@ -163,11 +191,21 @@ const NewPost = () => {
                 alt={media?.selected?._id}
               />
             </div>
+          ) : featuredImage?.url ? (
+            <div style={{ marginTop: '15px' }}>
+              <Image
+                width="100%"
+                src={featuredImage?.url}
+                alt={featuredImage?.url}
+              />
+            </div>
+          ) : (
+            ''
           )}
 
           <Button
             type="primary"
-            onClick={handlePublish}
+            onClick={handleEditPost}
             style={{ margin: '10px 0 10px 0', width: '100%' }}
             loading={loading}
           >
@@ -207,4 +245,4 @@ const NewPost = () => {
   );
 };
 
-export default NewPost;
+export default EditPost;
