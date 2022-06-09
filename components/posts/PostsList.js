@@ -3,7 +3,7 @@ import { List, Tooltip } from 'antd';
 import { useRouter } from 'next/router';
 import { toCapitalize } from 'utils';
 
-const PostsList = ({ posts, handleDeletePost }) => {
+const PostsList = ({ posts, handleDeletePost, author = false }) => {
   const router = useRouter();
   return (
     <List
@@ -23,7 +23,11 @@ const PostsList = ({ posts, handleDeletePost }) => {
               >
                 <EditOutlined
                   style={{ color: '#f1c40f' }}
-                  onClick={() => router.push(`/admin/posts/edit/${item.slug}`)}
+                  onClick={() =>
+                    author
+                      ? router.push(`/author/posts/edit/${item.slug}`)
+                      : router.push(`/admin/posts/edit/${item.slug}`)
+                  }
                 />
               </Tooltip>,
               <Tooltip

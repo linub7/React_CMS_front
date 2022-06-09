@@ -5,7 +5,7 @@ import { AuthContext } from 'context/auth';
 import { MediaContext } from 'context/media';
 import { useRouter } from 'next/router';
 
-const UploadFile = ({ redirectToLibrary = false }) => {
+const UploadFile = ({ redirectToLibrary = false, author = false }) => {
   const router = useRouter();
   const { auth } = useContext(AuthContext);
   const { media, setMedia } = useContext(MediaContext);
@@ -37,6 +37,7 @@ const UploadFile = ({ redirectToLibrary = false }) => {
             showMediaModal: false,
           })
         );
+        author && router.push('/author/media/library');
         redirectToLibrary && router.push('/admin/media/library');
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} file upload failed.`);

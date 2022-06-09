@@ -7,7 +7,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 const { Dragger } = Upload;
 
-const MediaLibrary = () => {
+const MediaLibrary = ({ author = false }) => {
   const [showPreview, setShowPreview] = useState(false);
   const { auth } = useContext(AuthContext);
   const { media, setMedia } = useContext(MediaContext);
@@ -15,7 +15,7 @@ const MediaLibrary = () => {
   useEffect(() => {
     const fetchMedia = async () => {
       try {
-        const { data } = await axios.get('/media');
+        const { data } = await axios.get(author ? `/author-media` : `/media`);
         setMedia({ ...media, images: data });
         localStorage.setItem(
           'media',
@@ -101,6 +101,7 @@ const MediaLibrary = () => {
       }
     } catch (error) {
       console.log(error);
+      toast.error(error.response?.data?.error);
     }
   };
 
