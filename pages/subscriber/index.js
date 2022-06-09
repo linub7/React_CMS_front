@@ -1,5 +1,7 @@
+import SubscriberLayout from 'components/subscriber/layout/SubscriberLayout';
+
 const Subscriber = () => {
-  return <div>Subscriber</div>;
+  return <SubscriberLayout>Subscriber</SubscriberLayout>;
 };
 
 export default Subscriber;

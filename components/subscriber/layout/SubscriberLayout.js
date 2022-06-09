@@ -4,14 +4,14 @@ import { AuthContext } from 'context/auth';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
-import AdminNav from '../nav/AdminNav';
 import { LoadingOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { toCapitalize } from 'utils';
+import SubscriberNav from '../nav/SubscriberNav';
 
 const { Content } = Layout;
 
-const AdminLayout = ({ children }) => {
+const SubscriberLayout = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const router = useRouter();
@@ -20,7 +20,7 @@ const AdminLayout = ({ children }) => {
     query: { slug },
   } = router;
   pathname =
-    pathname.split('/').pop() === 'admin'
+    pathname.split('/').pop() === 'subscriber'
       ? 'Dashboard'
       : pathname.split('/').pop();
   const title = slug ? slug : toCapitalize(pathname);
@@ -30,20 +30,26 @@ const AdminLayout = ({ children }) => {
 
   useEffect(() => {
     !auth?.token && router.push('/');
-    auth?.token && getCurrentAdmin();
+    auth?.token && getCurrentSubscriber();
 
     return () => {
       setLoading(false);
     };
   }, [auth?.token]);
 
-  const getCurrentAdmin = async () => {
+  const getCurrentSubscriber = async () => {
     try {
-      const { data } = await axios.get('/current-admin');
+      const { data } = await axios.get('/current-subscriber');
+      console.log(data);
+      if (!data?.ok) {
+        router.push('/');
+        setLoading(false);
+      }
       setLoading(false);
     } catch (error) {
       console.log(error);
       router.push('/');
+      setLoading(false);
     }
   };
 
@@ -64,9 +70,9 @@ const AdminLayout = ({ children }) => {
   return (
     <Layout>
       <Head>
-        <title>Admin - {title}</title>
+        <title>Subscriber - {title}</title>
       </Head>
-      <AdminNav />
+      <SubscriberNav />
       <Layout>
         <Content style={{ padding: '10px' }}>{children}</Content>
       </Layout>
@@ -74,4 +80,4 @@ const AdminLayout = ({ children }) => {
   );
 };
 
-export default AdminLayout;
+export default SubscriberLayout;

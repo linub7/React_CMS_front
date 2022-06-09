@@ -29,6 +29,7 @@ const AuthorLayout = ({ children }) => {
   const { auth } = useContext(AuthContext);
 
   useEffect(() => {
+    !auth?.token && router.push('/');
     auth?.token && getCurrentAuthor();
 
     return () => {
