@@ -29,7 +29,6 @@ const AdminLayout = ({ children }) => {
   const { auth } = useContext(AuthContext);
 
   useEffect(() => {
-    !auth?.token && router.push('/');
     auth?.token && getCurrentAdmin();
 
     return () => {
