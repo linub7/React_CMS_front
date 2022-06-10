@@ -28,15 +28,15 @@ const UploadFile = ({ redirectToLibrary = false, author = false }) => {
           selected: info.file.response,
           showMediaModal: false,
         });
-        localStorage.setItem(
-          'media',
-          JSON.stringify({
-            ...media,
-            images: [...media.images, info.file.response],
-            selected: info.file.response,
-            showMediaModal: false,
-          })
-        );
+        // localStorage.setItem(
+        //   'media',
+        //   JSON.stringify({
+        //     ...media,
+        //     images: [...media.images, info.file.response],
+        //     selected: info.file.response,
+        //     showMediaModal: false,
+        //   })
+        // );
         author && router.push('/author/media/library');
         redirectToLibrary && router.push('/admin/media/library');
       } else if (info.file.status === 'error') {

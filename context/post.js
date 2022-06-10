@@ -18,11 +18,11 @@ const PostProvider = ({ children }) => {
       auth?.token && `Bearer ${auth?.token}`;
   }
 
-  useEffect(() => {
-    if (localStorage.getItem('posts')) {
-      setPosts(JSON.parse(localStorage.getItem('posts')));
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (localStorage.getItem('posts')) {
+  //     setPosts(JSON.parse(localStorage.getItem('posts')));
+  //   }
+  // }, []);
 
   return (
     <PostContext.Provider value={{ posts, setPosts }}>

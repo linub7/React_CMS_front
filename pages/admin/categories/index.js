@@ -33,9 +33,9 @@ const Categories = () => {
     try {
       const { data } = await axios.get('/categories');
       setCategories(data?.categories);
-      JSON.stringify(
-        localStorage.setItem('categories', JSON.stringify(data?.categories))
-      );
+      // JSON.stringify(
+      //   localStorage.setItem('categories', JSON.stringify(data?.categories))
+      // );
     } catch (error) {
       console.log(error);
     }
@@ -51,10 +51,10 @@ const Categories = () => {
         toast.success('Category added successfully');
         form.resetFields();
         setCategories([data?.category, ...categories]);
-        localStorage.setItem(
-          'categories',
-          JSON.stringify([data?.category, ...categories])
-        );
+        // localStorage.setItem(
+        //   'categories',
+        //   JSON.stringify([data?.category, ...categories])
+        // );
       }
       setLoading(false);
     } catch (error) {
@@ -79,12 +79,12 @@ const Categories = () => {
           setCategories(
             categories.filter((category) => category._id !== categoryId)
           );
-          localStorage.setItem(
-            'categories',
-            JSON.stringify(
-              categories.filter((category) => category._id !== categoryId)
-            )
-          );
+          // localStorage.setItem(
+          //   'categories',
+          //   JSON.stringify(
+          //     categories.filter((category) => category._id !== categoryId)
+          //   )
+          // );
         }
       } catch (error) {
         console.log(error);

@@ -23,11 +23,11 @@ const MediaProvider = ({ children }) => {
       auth?.token && `Bearer ${auth?.token}`;
   }
 
-  useEffect(() => {
-    if (localStorage.getItem('media')) {
-      setMedia(JSON.parse(localStorage.getItem('media')));
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (localStorage.getItem('media')) {
+  //     setMedia(JSON.parse(localStorage.getItem('media')));
+  //   }
+  // }, []);
 
   return (
     <MediaContext.Provider value={{ media, setMedia }}>

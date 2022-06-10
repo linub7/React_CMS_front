@@ -4,7 +4,7 @@ import { Avatar, List, Tooltip } from 'antd';
 import { useRouter } from 'next/router';
 import { toCapitalize } from 'utils';
 
-const UsersList = ({ users, handleDeleteUser }) => {
+const UsersList = ({ users, handleDeleteUser, auth }) => {
   const onlyWidth = useWindowWidth();
   const router = useRouter();
   return (
@@ -25,7 +25,11 @@ const UsersList = ({ users, handleDeleteUser }) => {
               >
                 <EditOutlined
                   style={{ color: '#f1c40f' }}
-                  onClick={() => router.push(`/admin/users/edit/${item.slug}`)}
+                  onClick={() =>
+                    auth?.user._id === item._id
+                      ? router.push(`/admin/me`)
+                      : router.push(`/admin/users/${item._id}`)
+                  }
                 />
               </Tooltip>,
               <Tooltip

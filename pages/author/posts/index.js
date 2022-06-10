@@ -24,7 +24,7 @@ const AuthorPosts = () => {
         toast.error(data?.error);
       } else {
         setPosts(data?.posts);
-        localStorage.setItem('posts', JSON.stringify(data?.posts));
+        // localStorage.setItem('posts', JSON.stringify(data?.posts));
       }
     } catch (error) {
       console.log(error);
@@ -41,10 +41,10 @@ const AuthorPosts = () => {
         } else {
           toast.success('Post deleted successfully');
           setPosts(posts.filter((post) => post._id !== postId));
-          localStorage.setItem(
-            'posts',
-            JSON.stringify(posts.filter((post) => post._id !== postId))
-          );
+          // localStorage.setItem(
+          //   'posts',
+          //   JSON.stringify(posts.filter((post) => post._id !== postId))
+          // );
         }
       } catch (error) {
         console.log(error);

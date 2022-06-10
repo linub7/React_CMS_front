@@ -85,10 +85,10 @@ const NewPostComponent = ({ author = false }) => {
         localStorage.removeItem('post-content');
         setCategories([]);
         setMedia({ ...media, selected: null });
-        localStorage.setItem(
-          'media',
-          JSON.stringify({ ...media, selected: null })
-        );
+        // localStorage.setItem(
+        //   'media',
+        //   JSON.stringify({ ...media, selected: null })
+        // );
         setLoading(false);
         author ? router.push('/author/posts') : router.push('/admin/posts');
       }

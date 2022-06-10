@@ -18,11 +18,11 @@ const CategoryProvider = ({ children }) => {
       auth?.token && `Bearer ${auth?.token}`;
   }
 
-  useEffect(() => {
-    if (localStorage.getItem('categories')) {
-      setCategories(JSON.parse(localStorage.getItem('categories')));
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (localStorage.getItem('categories')) {
+  //     setCategories(JSON.parse(localStorage.getItem('categories')));
+  //   }
+  // }, []);
 
   return (
     <CategoryContext.Provider value={{ categories, setCategories }}>

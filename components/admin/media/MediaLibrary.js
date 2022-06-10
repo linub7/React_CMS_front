@@ -17,10 +17,10 @@ const MediaLibrary = ({ author = false }) => {
       try {
         const { data } = await axios.get(author ? `/author-media` : `/media`);
         setMedia({ ...media, images: data });
-        localStorage.setItem(
-          'media',
-          JSON.stringify({ ...media, images: data })
-        );
+        // localStorage.setItem(
+        //   'media',
+        //   JSON.stringify({ ...media, images: data })
+        // );
       } catch (error) {
         console.log(error);
       }
@@ -51,15 +51,15 @@ const MediaLibrary = ({ author = false }) => {
           selected: info.file.response,
           showMediaModal: false,
         });
-        localStorage.setItem(
-          'media',
-          JSON.stringify({
-            ...media,
-            images: [...media.images, info.file.response],
-            selected: info.file.response,
-            showMediaModal: false,
-          })
-        );
+        // localStorage.setItem(
+        //   'media',
+        //   JSON.stringify({
+        //     ...media,
+        //     images: [...media.images, info.file.response],
+        //     selected: info.file.response,
+        //     showMediaModal: false,
+        //   })
+        // );
       } else if (status === 'error') {
         message.error(`${info.file.name} file upload failed.`);
       }
@@ -72,10 +72,10 @@ const MediaLibrary = ({ author = false }) => {
 
   const handleChooseFeaturedImage = (image) => {
     setMedia({ ...media, selected: image, showMediaModal: false });
-    localStorage.setItem(
-      'media',
-      JSON.stringify({ ...media, selected: image, showMediaModal: false })
-    );
+    // localStorage.setItem(
+    //   'media',
+    //   JSON.stringify({ ...media, selected: image, showMediaModal: false })
+    // );
   };
 
   const handleDeleteFeaturedImage = async (image) => {
@@ -89,14 +89,14 @@ const MediaLibrary = ({ author = false }) => {
           selected: media.selected._id === image._id ? '' : media.selected,
           images: media.images.filter((i) => i._id !== image._id),
         });
-        localStorage.setItem(
-          'media',
-          JSON.stringify({
-            ...media,
-            selected: media.selected._id === image._id ? '' : media.selected,
-            images: media.images.filter((i) => i._id !== image._id),
-          })
-        );
+        // localStorage.setItem(
+        //   'media',
+        //   JSON.stringify({
+        //     ...media,
+        //     selected: media.selected._id === image._id ? '' : media.selected,
+        //     images: media.images.filter((i) => i._id !== image._id),
+        //   })
+        // );
         toast.success('Image deleted successfully');
       }
     } catch (error) {
