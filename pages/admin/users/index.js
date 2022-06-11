@@ -11,7 +11,7 @@ const Users = () => {
   const { auth } = useContext(AuthContext);
 
   useEffect(() => {
-    getAllUsers();
+    auth?.token && getAllUsers();
 
     return () => {
       setUsers([]);

@@ -95,8 +95,8 @@ const AdminNav = () => {
       ),
     ]),
     getItem(
-      <Link href={'/admin/users/1'} passHref>
-        <a className={activeName('/admin/users/1')}>Profile</a>
+      <Link href={'/admin/profile'} passHref>
+        <a className={activeName('/admin/profile')}>Profile</a>
       </Link>,
       '9',
       <UserOutlined />

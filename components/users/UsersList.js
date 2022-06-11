@@ -27,7 +27,7 @@ const UsersList = ({ users, handleDeleteUser, auth }) => {
                   style={{ color: '#f1c40f' }}
                   onClick={() =>
                     auth?.user._id === item._id
-                      ? router.push(`/admin/me`)
+                      ? router.push(`/admin/profile`)
                       : router.push(`/admin/users/${item._id}`)
                   }
                 />

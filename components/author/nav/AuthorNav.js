@@ -73,8 +73,8 @@ const AuthorNav = () => {
       <CommentOutlined />
     ),
     getItem(
-      <Link href={'/author/users/1'} passHref>
-        <a className={activeName('/author/users/1')}>Profile</a>
+      <Link href={'/author/profile'} passHref>
+        <a className={activeName('/author/profile')}>Profile</a>
       </Link>,
       '9',
       <UserOutlined />

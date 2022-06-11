@@ -42,8 +42,8 @@ const SubscriberNav = () => {
       <CommentOutlined />
     ),
     getItem(
-      <Link href={'/subscriber/users/1'} passHref>
-        <a className={activeName('/subscriber/users/1')}>Profile</a>
+      <Link href={'/subscriber/profile'} passHref>
+        <a className={activeName('/subscriber/profile')}>Profile</a>
       </Link>,
       '9',
       <UserOutlined />

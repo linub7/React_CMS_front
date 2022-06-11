@@ -1,23 +1,20 @@
 import { useState, useEffect, useContext } from 'react';
-import AdminLayout from 'components/admin/layout/AdminLayout';
-import toast from 'react-hot-toast';
-import { useRouter } from 'next/router';
-import axios from 'axios';
+import ProfileUpdate from 'components/profile/ProfileUpdate';
 import { AuthContext } from 'context/auth';
 import { MediaContext } from 'context/media';
-import ProfileUpdate from 'components/profile/ProfileUpdate';
+import toast from 'react-hot-toast';
+import axios from 'axios';
+import AuthorLayout from 'components/author/layout/AuthorLayout';
+import SubscriberLayout from 'components/subscriber/layout/SubscriberLayout';
 
-const UpdateUser = () => {
-  const router = useRouter();
-  const {
-    query: { userId },
-  } = router;
+const SubscriberProfile = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [website, setWebsite] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
   const [image, setImage] = useState({});
+  const [id, setId] = useState(null);
   const [loading, setLoading] = useState('');
 
   const { auth, setAuth } = useContext(AuthContext);
@@ -25,11 +22,11 @@ const UpdateUser = () => {
 
   useEffect(() => {
     auth?.token && getUser();
-  }, [userId, auth?.token]);
+  }, [auth?.user?._id, auth?.token]);
 
   const getUser = async () => {
     try {
-      const { data } = await axios.get(`/users/${userId}`);
+      const { data } = await axios.get(`/me`);
       if (data?.error) {
         toast.error(data?.error);
       } else {
@@ -38,18 +35,20 @@ const UpdateUser = () => {
         setWebsite(data?.user?.website);
         setRole(data?.user?.role);
         setImage(data?.user?.image);
+        setId(data?.user?._id);
       }
     } catch (error) {
       console.log(error);
-      router.push('/admin/users');
     }
   };
+
+  console.log({ name, email, website, role, image, id });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data } = await axios.put(`/users/${userId}`, {
+      const { data } = await axios.put(`/edit/me`, {
         name,
         role,
         email,
@@ -61,14 +60,13 @@ const UpdateUser = () => {
           ? image?._id
           : undefined,
       });
-      console.log('update user', data);
+      console.log('image', data?.user?.image);
       if (data?.error) {
         toast.error(data?.error);
       } else {
+        setAuth({ ...auth, user: data?.user });
+        setMedia({ ...media, selected: data?.user?.image });
         toast.success('User updated successfully');
-        setTimeout(() => {
-          router.push('/admin/users');
-        }, 1000);
       }
       setLoading(false);
     } catch (error) {
@@ -76,11 +74,10 @@ const UpdateUser = () => {
       setLoading(false);
     }
   };
-
   return (
-    <AdminLayout>
+    <SubscriberLayout>
       <ProfileUpdate
-        title={'User'}
+        title={'Profile'}
         name={name}
         setName={setName}
         email={email}
@@ -95,9 +92,10 @@ const UpdateUser = () => {
         setWebsite={setWebsite}
         image={image}
         media={media}
+        profile={true}
       />
-    </AdminLayout>
+    </SubscriberLayout>
   );
 };
 
-export default UpdateUser;
+export default SubscriberProfile;
