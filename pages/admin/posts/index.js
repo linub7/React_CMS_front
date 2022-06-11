@@ -1,25 +1,29 @@
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Col, List, Row, Tooltip } from 'antd';
+import { Button, Col, Input, Row } from 'antd';
 import AdminLayout from 'components/admin/layout/AdminLayout';
 import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { PostContext } from 'context/post';
 import PostsList from 'components/posts/PostsList';
+import { AuthContext } from 'context/auth';
 
 const Posts = () => {
   const router = useRouter();
 
   const { posts, setPosts } = useContext(PostContext);
+  const { auth } = useContext(AuthContext);
+
+  const [keyword, setKeyword] = useState('');
 
   useEffect(() => {
-    getPosts();
+    auth?.token && getPosts();
   }, []);
 
   const getPosts = async () => {
     try {
-      const { data } = await axios.get('/posts');
+      const { data } = await axios.get('/posts-for-admin');
       if (data?.error) {
         toast.error(data?.error);
       } else {
@@ -66,8 +70,23 @@ const Posts = () => {
             Add New
           </Button>
           <h1 style={{ marginTop: '15px' }}>{posts?.length} Posts:</h1>
+          <Input
+            placeholder="Search Post"
+            value={keyword}
+            type="search"
+            onChange={(e) => setKeyword(e.target.value.toLowerCase())}
+          />
           <div className="line"></div>
-          <PostsList posts={posts} handleDeletePost={handleDeletePost} />
+          <PostsList
+            posts={
+              keyword
+                ? posts?.filter((post) =>
+                    post.title.toLowerCase().includes(keyword)
+                  )
+                : posts
+            }
+            handleDeletePost={handleDeletePost}
+          />
         </Col>
       </Row>
     </AdminLayout>

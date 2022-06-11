@@ -3,11 +3,12 @@ import AdminLayout from 'components/admin/layout/AdminLayout';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import UsersList from 'components/users/UsersList';
-import { Col, Row } from 'antd';
+import { Col, Input, Row } from 'antd';
 import { AuthContext } from 'context/auth';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
+  const [keyword, setKeyword] = useState('');
   const { auth } = useContext(AuthContext);
 
   useEffect(() => {
@@ -45,17 +46,27 @@ const Users = () => {
     }
   };
 
-  console.log(users);
-
   return (
     <AdminLayout>
       <Row>
         <Col span={22} offset={1}>
           <h1 style={{ marginTop: '15px' }}>All Users: {users?.length}</h1>
+          <Input
+            placeholder="Search Post"
+            value={keyword}
+            type="search"
+            onChange={(e) => setKeyword(e.target.value.toLowerCase())}
+          />
           <div className="line"></div>
           <UsersList
             handleDeleteUser={handleDeleteUser}
-            users={users}
+            users={
+              keyword
+                ? users.filter((user) =>
+                    user.name.toLowerCase().includes(keyword)
+                  )
+                : users
+            }
             auth={auth}
           />
         </Col>
