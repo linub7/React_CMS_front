@@ -11,6 +11,7 @@ import CommentForm from 'components/comments/CommentForm';
 import toast from 'react-hot-toast';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { AuthContext } from 'context/auth';
+import { ShareSocial } from 'react-share-social';
 
 import relativeTime from 'dayjs/plugin/relativeTime';
 import EditCommentModal from 'components/comments/EditCommentModal';
@@ -27,8 +28,7 @@ const SinglePost = ({ post, comments }) => {
   const [openModal, setOpenModal] = useState(false);
   const [content, setContent] = useState('');
   const [selectedComment, setSelectedComment] = useState({});
-  const [editButtonLoading, setEditButtonLoading] = useState(false)
-
+  const [editButtonLoading, setEditButtonLoading] = useState(false);
 
   const handleSendComment = async () => {
     setLoading(true);
@@ -81,7 +81,7 @@ const SinglePost = ({ post, comments }) => {
   };
 
   const handleEditComment = async () => {
-    setEditButtonLoading(true)
+    setEditButtonLoading(true);
     try {
       const { data } = await axios.put(
         `comments/${post._id}/${selectedComment._id}`,
@@ -138,6 +138,23 @@ const SinglePost = ({ post, comments }) => {
               ))}{' '}
               /by {post.postedBy.name}
             </p>
+
+            {/* social share */}
+            <div style={{ marginTop: '15px', marginBottom: '15px' }}>
+              <ShareSocial
+                style={{
+                  background:
+                    'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                  borderRadius: 3,
+                  border: 0,
+                  color: 'white',
+                  padding: '0 30px',
+                  boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+                }}
+                url={typeof window !== 'undefined' && window.location.href}
+                socialTypes={['facebook', 'twitter', 'linkedin', 'reddit']}
+              />
+            </div>
 
             <div className="editor-scroll">
               <Editor

@@ -77,7 +77,15 @@ const TopNav = () => {
         setCurrent('posts');
       },
     },
-
+    {
+      label: 'CONTACTS',
+      key: 'contacts',
+      icon: <MailOutlined />,
+      onClick: () => {
+        router.push('/contact');
+        setCurrent('contact');
+      },
+    },
     {
       icon: <ToggleTheme />,
       onClick: toggleTheme,

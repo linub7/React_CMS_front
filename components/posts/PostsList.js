@@ -5,6 +5,7 @@ import { toCapitalize } from 'utils';
 
 const PostsList = ({ posts, handleDeletePost, author = false }) => {
   const router = useRouter();
+  console.log(posts);
   return (
     <List
       itemLayout="horizontal"
@@ -44,6 +45,7 @@ const PostsList = ({ posts, handleDeletePost, author = false }) => {
             ]}
           >
             <List.Item.Meta title={toCapitalize(item?.title)} />
+            <List.Item.Meta title={item?.postedBy?.name} />
           </List.Item>
           <div className="line"></div>
         </div>
