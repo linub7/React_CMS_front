@@ -1,7 +1,11 @@
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import { List, Tooltip } from 'antd';
+import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
 import { toCapitalize } from 'utils';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+
+dayjs.extend(localizedFormat);
 
 const CommentsList = ({ comments, handleDeleteComment }) => {
   const router = useRouter();
@@ -18,10 +22,15 @@ const CommentsList = ({ comments, handleDeleteComment }) => {
               <Tooltip
                 placement="left"
                 key={item._id}
-                title="Edit"
-                color={'#f1c40f'}
+                title="View"
+                color={'#40A9FF'}
               >
-                <EditOutlined style={{ color: '#f1c40f' }} onClick={() => {}} />
+                <EyeOutlined
+                  style={{ color: '#40A9FF' }}
+                  onClick={() =>
+                    router.push(`/posts/${item?.post?.slug}#${item?._id}`)
+                  }
+                />
               </Tooltip>,
               <Tooltip
                 placement="top"
@@ -37,11 +46,14 @@ const CommentsList = ({ comments, handleDeleteComment }) => {
             ]}
           >
             <List.Item.Meta
-              title={toCapitalize(item?.content).substring(0, 30)}
+              title={item?.content}
+              description={`On ${item?.post?.title} | ${
+                item?.postedBy?.name
+              } | ${dayjs(item?.createdAt).format('L LT')}`}
             />
-            <List.Item.Meta
+            {/* <List.Item.Meta
               title={toCapitalize(item?.postedBy?.name).substring(0, 4)}
-            />
+            /> */}
           </List.Item>
           <div className="line"></div>
         </div>

@@ -8,7 +8,6 @@ import toast from 'react-hot-toast';
 
 const AdminComments = () => {
   const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
   const [comments, setComments] = useState([]);
   const [allComments, setAllComments] = useState(comments);
   const [loading, setLoading] = useState(false);
@@ -23,7 +22,7 @@ const AdminComments = () => {
 
   useEffect(() => {
     auth?.token && getComments();
-  }, [page]);
+  }, []);
 
   const getTotalComments = async () => {
     try {
@@ -37,12 +36,12 @@ const AdminComments = () => {
   const getComments = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`/admin/comments?page=${page}`);
+      const { data } = await axios.get(`/admin/comments`);
       if (data?.error) {
         toast.error(data?.error);
       } else {
         setComments(data?.comments);
-        setAllComments([...data?.comments, ...allComments]);
+        // setAllComments([...data?.comments, ...allComments]);
       }
       setLoading(false);
     } catch (error) {
@@ -80,23 +79,18 @@ const AdminComments = () => {
             onChange={(e) => setKeyword(e.target.value.toLowerCase())}
           />
           <CommentsList
-            comments={allComments}
+            comments={
+              keyword
+                ? comments?.filter(
+                    (comment) =>
+                      comment.content.toLowerCase().includes(keyword) ||
+                      comment.postedBy.name.toLowerCase().includes(keyword) ||
+                      comment.post.title.toLowerCase().includes(keyword)
+                  )
+                : comments
+            }
             handleDeleteComment={handleDeleteComment}
           />
-        </Col>
-      </Row>
-      <Row>
-        <Col span={24} style={{ textAlign: 'center', padding: '20px' }}>
-          {total !== allComments.length && (
-            <Button
-              size="large"
-              type="primary"
-              loading={loading}
-              onClick={() => setPage(page + 1)}
-            >
-              Load More
-            </Button>
-          )}
         </Col>
       </Row>
     </AdminLayout>

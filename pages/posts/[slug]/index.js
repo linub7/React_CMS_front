@@ -13,6 +13,7 @@ import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { AuthContext } from 'context/auth';
 
 import relativeTime from 'dayjs/plugin/relativeTime';
+import EditCommentModal from 'components/comments/EditCommentModal';
 dayjs.extend(relativeTime);
 
 const { Title } = Typography;
@@ -23,7 +24,11 @@ const SinglePost = ({ post, comments }) => {
   const [loadedComments, setLoadedComments] = useState(comments);
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showInput, setShowInput] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [content, setContent] = useState('');
+  const [selectedComment, setSelectedComment] = useState({});
+  const [editButtonLoading, setEditButtonLoading] = useState(false)
+
 
   const handleSendComment = async () => {
     setLoading(true);
@@ -68,6 +73,41 @@ const SinglePost = ({ post, comments }) => {
       }
     }
   };
+
+  const handleEditOperations = (comment) => {
+    setOpenModal(true);
+    setContent(comment.content);
+    setSelectedComment(comment);
+  };
+
+  const handleEditComment = async () => {
+    setEditButtonLoading(true)
+    try {
+      const { data } = await axios.put(
+        `comments/${post._id}/${selectedComment._id}`,
+        {
+          content,
+        }
+      );
+      if (data?.error) {
+        toast.error(data.error);
+      } else {
+        let arr = loadedComments;
+        const idx = arr.findIndex(
+          (element) => element._id === selectedComment._id
+        );
+        arr[idx].content = data?.comment?.content;
+        setLoadedComments(arr);
+        setOpenModal(false);
+      }
+      setEditButtonLoading(false);
+    } catch (error) {
+      console.log(error);
+      setEditButtonLoading(false);
+      toast.error('Something went wrong');
+    }
+  };
+
   return (
     <ClientLayout>
       <Head>
@@ -106,6 +146,7 @@ const SinglePost = ({ post, comments }) => {
                 defaultValue={post?.content}
               />
             </div>
+
             <CommentForm
               comment={comment}
               setComment={setComment}
@@ -120,6 +161,7 @@ const SinglePost = ({ post, comments }) => {
               dataSource={loadedComments}
               renderItem={(comment) => (
                 <List.Item
+                  id={comment?._id}
                   key={comment?._id}
                   actions={
                     comment?.postedBy?._id === auth?.user?._id && [
@@ -131,7 +173,7 @@ const SinglePost = ({ post, comments }) => {
                       >
                         <EditOutlined
                           style={{ color: '#f1c40f' }}
-                          onClick={() => setShowInput(true)}
+                          onClick={() => handleEditOperations(comment)}
                         />
                       </Tooltip>,
                       <Tooltip
@@ -212,6 +254,17 @@ const SinglePost = ({ post, comments }) => {
           explicabo, neque totam consectetur pariatur! Vitae, autem quas.
         </Col>
       </Row>
+      {openModal && (
+        <EditCommentModal
+          content={content}
+          setContent={setContent}
+          handleCloseModal={() => setOpenModal(false)}
+          handleEditComment={handleEditComment}
+          openModal={openModal}
+          loading={editButtonLoading}
+          auth={auth}
+        />
+      )}
     </ClientLayout>
   );
 };
