@@ -1,32 +1,11 @@
 import { Col, Divider, Row } from 'antd';
-import axios from 'axios';
 import AdminLayout from 'components/admin/layout/AdminLayout';
 import RenderProgress from 'components/shared/RenderProgress';
-import { useState, useEffect } from 'react';
+import useNumbers from 'hooks/useNumbers';
 
 const Admin = () => {
-  const [usersCounts, setUsersCounts] = useState(0);
-  const [postsCount, setPostsCount] = useState(0);
-  const [commentsCount, setCommentsCount] = useState(0);
-  const [categoriesCount, setCategoriesCount] = useState(0);
-
-  useEffect(() => {
-    getCounts();
-  }, []);
-
-  const getCounts = async () => {
-    try {
-      const { data } = await axios.get(`/statistics`);
-      setUsersCounts(data?.usersCount);
-      setPostsCount(data?.postsCount);
-      setCommentsCount(data?.commentsCount);
-      setCategoriesCount(data?.categoriesCount);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  console.log({ usersCounts, postsCount, commentsCount, categoriesCount });
+  const { usersCounts, postsCount, commentsCount, categoriesCount } =
+    useNumbers();
 
   return (
     <AdminLayout>

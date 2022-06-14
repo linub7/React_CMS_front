@@ -8,6 +8,7 @@ import AdminNav from '../nav/AdminNav';
 import { LoadingOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { toCapitalize } from 'utils';
+import LoadingToRedirect from 'components/shared/LoadingToRedirect';
 
 const { Content } = Layout;
 
@@ -39,7 +40,9 @@ const AdminLayout = ({ children }) => {
   const getCurrentAdmin = async () => {
     try {
       const { data } = await axios.get('/current-admin');
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
     } catch (error) {
       console.log(error);
       router.push('/');
@@ -47,17 +50,7 @@ const AdminLayout = ({ children }) => {
   };
 
   if (loading) {
-    return (
-      <LoadingOutlined
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
-          fontSize: '48px',
-        }}
-      />
-    );
+    return <LoadingToRedirect />;
   }
 
   return (

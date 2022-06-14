@@ -156,7 +156,7 @@ const SinglePost = ({ post }) => {
         <title>{post?.title}</title>
         <meta description={post?.content.substring(0, 160)} />
       </Head>
-      <Row gutter={12}>
+      <Row>
         <Col sm={24} lg={16}>
           <Card
             cover={

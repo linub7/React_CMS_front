@@ -49,7 +49,7 @@ const Posts = ({ posts }) => {
         <title>Posts</title>
         <meta description="Blog posts about web development, programming & etc" />
       </Head>
-      <Row gutter={12}>
+      <Row>
         {allPosts?.map((post) => (
           <Col
             xs={24}

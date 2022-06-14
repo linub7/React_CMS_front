@@ -1,6 +1,7 @@
 import { MailOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Col, Form, Input, Row } from 'antd';
 import axios from 'axios';
+import ClientLayout from 'components/client/layout/ClientLayout';
 import Head from 'next/head';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -28,7 +29,7 @@ const Contact = () => {
     }
   };
   return (
-    <>
+    <ClientLayout>
       <Head>
         <title>Contact</title>
       </Head>
@@ -105,7 +106,7 @@ const Contact = () => {
           </Form>
         </Col>
       </Row>
-    </>
+    </ClientLayout>
   );
 };
 

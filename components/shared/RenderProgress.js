@@ -2,7 +2,7 @@ import { Progress } from 'antd';
 import Link from 'next/link';
 import CountTo from 'react-count-to';
 
-const RenderProgress = ({ count, path = '#', name }) => {
+const RenderProgress = ({ count, path = '/', name }) => {
   return (
     <Link href={path} passHref>
       <a>
