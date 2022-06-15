@@ -1,14 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
 import { SendOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
+import useHome from 'hooks/useHome';
 import { useRouter } from 'next/router';
 
 const HeroSection = ({ auth }) => {
   const router = useRouter();
+  const { title, subtitle, fullWidthImage } = useHome();
   return (
     <>
       <img
-        src={`/images/jr-korpa.jpg`}
+        src={(fullWidthImage && fullWidthImage?.url) || `/images/jr-korpa.jpg`}
         alt="CMS"
         style={{
           width: '100%',
@@ -27,10 +29,8 @@ const HeroSection = ({ auth }) => {
           textShadow: '2px 2px 4px #000000',
         }}
       >
-        <h1 style={{ color: '#fff' }}>CMS</h1>
-        <p style={{ fontSize: '35px', marginTop: '-75px' }}>
-          Content Management System
-        </p>
+        <h1 style={{ color: '#fff' }}>{title}</h1>
+        <p style={{ fontSize: '35px', marginTop: '-75px' }}>{subtitle}</p>
         <Button
           type="primary"
           icon={<SendOutlined spin />}

@@ -63,7 +63,7 @@ const SingleCategory = ({ posts, category }) => {
             </Card>
           ))}
         </Col>
-        <Col sm={24} lg={8} style={{ marginTop: '30px' }}>
+        <Col sm={24} lg={8} style={{ marginTop: '30px', textAlign: 'center' }}>
           <Divider>Categories</Divider>
           {categories?.map((category) => (
             <Link
