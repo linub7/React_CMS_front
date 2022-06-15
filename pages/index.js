@@ -1,7 +1,9 @@
-import { Col, Row } from 'antd';
+import LandingCategories from 'components/client/landing/LandingCategories';
+import LandingFooter from 'components/client/landing/LandingFooter';
+import LandingLatestPosts from 'components/client/landing/LandingLatestPosts';
+import LandingRenderingCount from 'components/client/landing/LandingRenderingCount';
 import ClientLayout from 'components/client/layout/ClientLayout';
 import HeroSection from 'components/hero/HeroSection';
-import RenderProgress from 'components/shared/RenderProgress';
 import { AuthContext } from 'context/auth';
 import useNumbers from 'hooks/useNumbers';
 import Head from 'next/head';
@@ -23,32 +25,15 @@ const Home = () => {
         />
       </Head>
       <HeroSection auth={auth} />
-      <Row>
-        <Col
-          span={6}
-          style={{ marginTop: '70px', textAlign: 'center', fontSize: '20px' }}
-        >
-          <RenderProgress count={postsCount} name="Posts" />
-        </Col>
-        <Col
-          span={6}
-          style={{ marginTop: '70px', textAlign: 'center', fontSize: '20px' }}
-        >
-          <RenderProgress count={categoriesCount} name="Categories" />
-        </Col>
-        <Col
-          span={6}
-          style={{ marginTop: '70px', textAlign: 'center', fontSize: '20px' }}
-        >
-          <RenderProgress count={commentsCount} name="Comments" />
-        </Col>
-        <Col
-          span={6}
-          style={{ marginTop: '70px', textAlign: 'center', fontSize: '20px' }}
-        >
-          <RenderProgress count={usersCounts} name="Users" />
-        </Col>
-      </Row>
+      <LandingRenderingCount
+        categoriesCount={categoriesCount}
+        commentsCount={commentsCount}
+        usersCounts={usersCounts}
+        postsCount={postsCount}
+      />
+      <LandingLatestPosts />
+      <LandingCategories />
+      <LandingFooter />
     </ClientLayout>
   );
 };
